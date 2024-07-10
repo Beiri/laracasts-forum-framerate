@@ -15,7 +15,12 @@
 
                 <form
                     v-if="$page.props.auth.user"
-                    @submit.prevent="addComment"
+                    @submit.prevent="
+                        () =>
+                            commentIdBeingEdited
+                                ? updateComment()
+                                : addComment()
+                    "
                     class="mt-4"
                 >
                     <div>
@@ -25,6 +30,7 @@
                         <TextArea
                             id="body"
                             v-model="commentForm.body"
+                            ref="commentTextAreaRef"
                             rows="4"
                             placeholder="Speak you mind Spock..."
                         />
@@ -38,7 +44,17 @@
                         type="submit"
                         class="mt-3"
                         :disabled="commentForm.processing"
-                        >Add Comment</PrimaryButton
+                        v-text="
+                            commentIdBeingEdited
+                                ? 'Update Comment'
+                                : 'Add Comment'
+                        "
+                    />
+                    <SecondaryButton
+                        v-if="commentIdBeingEdited"
+                        @click="cancelEditComment"
+                        class="ml-2"
+                        >Cancel</SecondaryButton
                     >
                 </form>
 
@@ -48,7 +64,11 @@
                         :key="comment.id"
                         class="px-2 py-4"
                     >
-                        <Comment @delete="deleteComment" :comment="comment" />
+                        <Comment
+                            @edit="editComment"
+                            @delete="deleteComment"
+                            :comment="comment"
+                        />
                     </li>
                 </ul>
 
@@ -59,6 +79,9 @@
 </template>
 
 <script setup>
+import { computed, ref } from "vue";
+import { router, useForm } from "@inertiajs/vue3";
+import { relativeDate } from "@/Utilities/date";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Container from "@/Components/Container.vue";
 import Pagination from "@/Components/Pagination.vue";
@@ -66,10 +89,8 @@ import Comment from "@/Components/Comment.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextArea from "@/Components/TextArea.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { computed } from "vue";
-import { relativeDate } from "@/Utilities/date";
-import { router, useForm } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const props = defineProps(["post", "comments"]);
 
@@ -79,11 +100,42 @@ const commentForm = useForm({
     body: "",
 });
 
+const commentTextAreaRef = ref(null);
+const commentIdBeingEdited = ref(null);
+const commentBeingEdit = computed(() =>
+    props.comments.data.find(
+        (comment) => comment.id === commentIdBeingEdited.value
+    )
+);
+
+const editComment = (commentId) => {
+    commentIdBeingEdited.value = commentId;
+    commentForm.body = commentBeingEdit.value?.body;
+    commentTextAreaRef.value?.focus();
+};
+
+const cancelEditComment = () => {
+    commentIdBeingEdited.value = null;
+    commentForm.reset();
+};
+
 const addComment = () =>
     commentForm.post(route("posts.comments.store", props.post.id), {
         preserveScroll: true,
         onSuccess: () => commentForm.reset(),
     });
+
+const updateComment = () =>
+    commentForm.put(
+        route("comments.update", {
+            comment: commentIdBeingEdited.value,
+            page: props.comments.meta.current_page,
+        }),
+        {
+            preserveScroll: true,
+            onSuccess: cancelEditComment,
+        }
+    );
 
 const deleteComment = (commentId) =>
     router.delete(
