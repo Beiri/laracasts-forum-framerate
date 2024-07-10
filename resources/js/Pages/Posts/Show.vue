@@ -82,6 +82,7 @@
 import { computed, ref } from "vue";
 import { router, useForm } from "@inertiajs/vue3";
 import { relativeDate } from "@/Utilities/date";
+import { useConfirm } from "@/Utilities/Composables/useConfirm";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Container from "@/Components/Container.vue";
 import Pagination from "@/Components/Pagination.vue";
@@ -125,7 +126,16 @@ const addComment = () =>
         onSuccess: () => commentForm.reset(),
     });
 
-const updateComment = () =>
+const { confirmation } = useConfirm();
+
+const updateComment = async () => {
+    if (
+        !(await confirmation("Are you sure you want to delete this comment?"))
+    ) {
+        commentTextAreaRef.value?.focus();
+        return;
+    }
+
     commentForm.put(
         route("comments.update", {
             comment: commentIdBeingEdited.value,
@@ -136,8 +146,15 @@ const updateComment = () =>
             onSuccess: cancelEditComment,
         }
     );
+};
 
-const deleteComment = (commentId) =>
+const deleteComment = async (commentId) => {
+    if (
+        !(await confirmation("Are you sure you want to delete this comment?"))
+    ) {
+        return;
+    }
+
     router.delete(
         route("comments.destroy", {
             comment: commentId,
@@ -147,6 +164,7 @@ const deleteComment = (commentId) =>
             preserveScroll: true,
         }
     );
+};
 </script>
 
 <style lang="scss" scoped></style>
