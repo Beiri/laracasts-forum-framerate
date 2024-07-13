@@ -5,7 +5,7 @@
                 <ul class="divide-y">
                     <li v-for="post in posts.data" :key="post.id">
                         <Link
-                            :href="route('posts.show', post.id)"
+                            :href="post.routes.show"
                             class="group px-2 py-4 block"
                         >
                             <span
