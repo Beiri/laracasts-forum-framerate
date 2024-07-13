@@ -28,12 +28,12 @@
                         <InputLabel for="body" class="sr-only"
                             >Comment</InputLabel
                         >
-                        <TextArea
+                        <MarkdownEditor
                             id="body"
                             v-model="commentForm.body"
                             ref="commentTextAreaRef"
-                            rows="4"
                             placeholder="Speak you mind Spock..."
+                            editorClass="min-h-[160px]"
                         />
                         <InputError
                             :message="commentForm.errors.body"
@@ -93,6 +93,7 @@ import TextArea from "@/Components/TextArea.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import MarkdownEditor from "@/Components/MarkdownEditor.vue";
 
 const props = defineProps(["post", "comments"]);
 
