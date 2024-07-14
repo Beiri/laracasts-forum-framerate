@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="Create a Post">
         <Container>
-            <h1 class="text-2xl font-bold">Create a Post</h1>
+            <PageHeading>Create a Post</PageHeading>
 
             <form action="" @submit.prevent="createPost" class="mt-6">
                 <div class="mt-3">
@@ -47,6 +47,7 @@ import Container from "@/Components/Container.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import MarkdownEditor from "@/Components/MarkdownEditor.vue";
+import PageHeading from "@/Components/PageHeading.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
