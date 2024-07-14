@@ -3,11 +3,6 @@
         <AppLayout>
             <Container>
                 <div>
-                    <Link
-                        :href="route('posts.index')"
-                        class="text-indigo-500 hover:text-indigo-700"
-                        >Back to all Posts</Link
-                    >
                     <PageHeading
                         v-text="
                             selectedTopic ? selectedTopic.name : 'All Posts'
@@ -16,6 +11,26 @@
                     <p v-if="selectedTopic" class="mt-1 text-gray-600 text-sm">
                         {{ selectedTopic.description }}
                     </p>
+
+                    <menu class="flex space-x-1 mt-3 overflow-x-auto pb-2 pt-1">
+                        <li>
+                            <Pill
+                                :href="route('posts.index')"
+                                :filled="!selectedTopic"
+                                >All Posts</Pill
+                            >
+                        </li>
+                        <li v-for="topic in topics" :key="topic.id">
+                            <Pill
+                                :href="
+                                    route('posts.index', { topic: topic.slug })
+                                "
+                                :filled="topic.id === selectedTopic?.id"
+                            >
+                                {{ topic.name }}
+                            </Pill>
+                        </li>
+                    </menu>
                 </div>
                 <ul class="divide-y mt-4">
                     <li
@@ -36,14 +51,13 @@
                                 {{ post.user.name }}</span
                             >
                         </Link>
-                        <Link
+                        <Pill
                             :href="
                                 route('posts.index', { topic: post.topic.slug })
                             "
-                            class="mb-2 rounded-full py-0.5 px-2 border border-pink-500 text-pink-500 hover:bg-indigo-500 hover:text-indigo-50"
                         >
-                            {{ post.topic.slug }}</Link
-                        >
+                            {{ post.topic.name }}
+                        </Pill>
                     </li>
                 </ul>
 
@@ -60,8 +74,9 @@ import Pagination from "@/Components/Pagination.vue";
 import { Link } from "@inertiajs/vue3";
 import { relativeDate } from "@/Utilities/date";
 import PageHeading from "@/Components/PageHeading.vue";
+import Pill from "@/Components/Pill.vue";
 
-defineProps(["posts", "selectedTopic"]);
+defineProps(["posts", "topics", "selectedTopic"]);
 
 const formattedDate = (post) => relativeDate(post.created_at);
 </script>
