@@ -26,6 +26,16 @@ class Post extends Model
     }
 
     /**
+     * Get the topic that owns the Post
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function topic(): BelongsTo
+    {
+        return $this->belongsTo(Topic::class);
+    }
+
+    /**
      * Get all of the comments for the Post
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

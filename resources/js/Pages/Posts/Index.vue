@@ -3,7 +3,11 @@
         <AppLayout>
             <Container>
                 <ul class="divide-y">
-                    <li v-for="post in posts.data" :key="post.id">
+                    <li
+                        v-for="post in posts.data"
+                        :key="post.id"
+                        class="flex justify-between items-baseline flex-col md:flex-row"
+                    >
                         <Link
                             :href="post.routes.show"
                             class="group px-2 py-4 block"
@@ -17,6 +21,12 @@
                                 {{ post.user.name }}</span
                             >
                         </Link>
+                        <Link
+                            href="/"
+                            class="mb-2 rounded-full py-0.5 px-2 border border-pink-500 text-pink-500 hover:bg-indigo-500 hover:text-indigo-50"
+                        >
+                            {{ post.topic.slug }}</Link
+                        >
                     </li>
                 </ul>
 
