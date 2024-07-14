@@ -1,7 +1,10 @@
 <template>
     <AppLayout :title="post.title">
         <Container>
-            <PageHeading>{{ post.title }}</PageHeading>
+            <Pill :href="route('posts.index', { topic: post.topic.slug })">{{
+                post.topic.name
+            }}</Pill>
+            <PageHeading class="mt-2">{{ post.title }}</PageHeading>
             <span class="block mt-1 text-sm text-gray-600"
                 >{{ formattedDate }} ago by {{ post.user.name }}</span
             >
@@ -33,7 +36,7 @@
                             v-model="commentForm.body"
                             ref="commentTextAreaRef"
                             placeholder="Speak you mind Spock..."
-                            editorClass="min-h-[160px]"
+                            editorClass="!min-h-[160px]"
                         />
                         <InputError
                             :message="commentForm.errors.body"
@@ -95,6 +98,7 @@ import InputError from "@/Components/InputError.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import MarkdownEditor from "@/Components/MarkdownEditor.vue";
 import PageHeading from "@/Components/PageHeading.vue";
+import Pill from "@/Components/Pill.vue";
 
 const props = defineProps(["post", "comments"]);
 
