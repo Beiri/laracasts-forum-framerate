@@ -1,4 +1,8 @@
 <template>
+    <Head>
+        <link rel="canonical" :href="post.routes.show" />
+    </Head>
+
     <AppLayout :title="post.title">
         <Container>
             <Pill :href="route('posts.index', { topic: post.topic.slug })">{{
@@ -6,7 +10,7 @@
             }}</Pill>
             <PageHeading class="mt-2">{{ post.title }}</PageHeading>
             <span class="block mt-1 text-sm text-gray-600"
-                >{{ formattedDate }} ago by {{ post.user.name }}</span
+                >{{ formattedDate }} by {{ post.user.name }}</span
             >
 
             <article
@@ -84,7 +88,7 @@
 
 <script setup>
 import { computed, ref } from "vue";
-import { router, useForm } from "@inertiajs/vue3";
+import { Head, router, useForm } from "@inertiajs/vue3";
 import { relativeDate } from "@/Utilities/date";
 import { useConfirm } from "@/Utilities/Composables/useConfirm";
 import AppLayout from "@/Layouts/AppLayout.vue";
