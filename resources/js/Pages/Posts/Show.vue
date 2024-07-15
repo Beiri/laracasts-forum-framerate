@@ -92,7 +92,6 @@ import Container from "@/Components/Container.vue";
 import Pagination from "@/Components/Pagination.vue";
 import Comment from "@/Components/Comment.vue";
 import InputLabel from "@/Components/InputLabel.vue";
-import TextArea from "@/Components/TextArea.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
@@ -165,7 +164,10 @@ const deleteComment = async (commentId) => {
     router.delete(
         route("comments.destroy", {
             comment: commentId,
-            page: props.comments.meta.current_page,
+            page:
+                props.comments.data.length > 1
+                    ? props.comments.meta.current_page
+                    : Math.max(props.comments.meta.current_page - 1, 1),
         }),
         {
             preserveScroll: true,
